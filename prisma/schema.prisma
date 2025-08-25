@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  password  String
+  runs      Run[]
+}
+
+model Category {
+  id    Int   @id @default(autoincrment())
+  name  String
+  runs  Run[]
+}
+
+model Run {
+  id          Int
+  quantity    Int
+  videoUrl    String
+  status      String    @default("pending") // pending, validated, rejected
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  category    Category  @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+}
