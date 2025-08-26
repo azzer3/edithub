@@ -81,7 +81,7 @@ export default function CategoryPage() {
         <link rel="icon" href="/images/logo.png"></link>
       </head>
       <Header />
-      <h1>Leaderboard {categoryName || id}</h1> {/* Affiche le nom réel */}
+      <h1>Leaderboard {categoryName || id}</h1>
 
       {subCategories.length > 0 && (
         <select value={selectedSubCat || ""} onChange={e => setSelectedSubCat(e.target.value)}>

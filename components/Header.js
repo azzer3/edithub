@@ -30,7 +30,7 @@ export default function Header() {
         </div>
 
         <a href="/categories"><h2>Edit pur</h2></a>
-        <a href="/"><h2>Maps</h2></a>
+        <a href="/maps"><h2>Maps</h2></a>
 
         <div class="buttons">
           {!user && (
@@ -43,7 +43,7 @@ export default function Header() {
             <>
               <button onClick={handleLogout}>Se déconnecter</button>
               {user.isAdmin && <Link href="/admin"><button>Panel administrateur</button></Link>}
-              
+
               {user && !user.discordId && (
               <a href="/api/auth/discord"><button>Lier Discord</button></a>
               )}
