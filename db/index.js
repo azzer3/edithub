@@ -85,6 +85,42 @@ function updateRunStatus(runId, newStatus) {
   db.prepare("UPDATE runs SET status = ? WHERE id = ?").run(newStatus, runId);
 }
 
+// Récupère les runs pour une sous-catégorie, avec option de filtrer les runs "modded"
+function getRuns(categoryId, subCategoryId = null, showModded = true) {
+  // On récupère les runs validés
+  let query = `
+    SELECT runs.*, users.username, subCategories.name AS subCategory
+    FROM runs
+    JOIN users ON runs.userId = users.id
+    JOIN subCategories ON runs.subCategoryId = subCategories.id
+    WHERE runs.status = 'approved'
+  `;
+
+  const params = [];
+
+  // Filtre par catégorie via la table subCategories
+  if (categoryId) {
+    query += " AND subCategories.categoryId = ?";
+    params.push(categoryId);
+  }
+
+  // Filtre par sous-catégorie si précisé
+  if (subCategoryId) {
+    query += " AND runs.subCategoryId = ?";
+    params.push(subCategoryId);
+  }
+
+  // Filtre les runs "modded" si showModded = false
+  if (!showModded) {
+    query += " AND runs.game != 'rift'";
+  }
+
+  // Ordre décroissant selon quantity
+  query += " ORDER BY runs.quantity DESC";
+
+  return db.prepare(query).all(...params);
+}
+
 // ------------------------ DISCORD ------------------------
 function linkDiscordAccount(userId, discordId) {
   return db.prepare("UPDATE users SET discordId = ? WHERE id = ?").run(discordId, userId);
@@ -107,6 +143,7 @@ module.exports = {
   addRun,
   getRunsByCategory,
   getLeaderboard,
+  getRuns,
   validateRun,
   getPendingRuns,
   updateRunStatus,

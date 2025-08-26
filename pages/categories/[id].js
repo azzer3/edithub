@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import "../../styles/leaderboard.css";
 
 export default function CategoryPage() {
   const router = useRouter();
@@ -73,6 +76,11 @@ export default function CategoryPage() {
 
   return (
     <div>
+      <head>
+        <title>Leaderboard {categoryName || id}</title>
+        <link rel="icon" href="/images/logo.png"></link>
+      </head>
+      <Header />
       <h1>Leaderboard {categoryName || id}</h1> {/* Affiche le nom réel */}
 
       {subCategories.length > 0 && (
@@ -119,6 +127,7 @@ export default function CategoryPage() {
           </tbody>
         </table>
       )}
+      <Footer />
     </div>
   );
 }
