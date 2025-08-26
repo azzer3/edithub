@@ -4,10 +4,10 @@ const nextConfig: NextConfig = {
   /* config options here */
 };
 
-export default nextConfig;
-
 module.exports = {
   experimental: {
     appDir: false,
   },
 };
+
+export default nextConfig;
