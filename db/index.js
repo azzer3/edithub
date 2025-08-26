@@ -85,6 +85,15 @@ function updateRunStatus(runId, newStatus) {
   db.prepare("UPDATE runs SET status = ? WHERE id = ?").run(newStatus, runId);
 }
 
+// ------------------------ DISCORD ------------------------
+function linkDiscordAccount(userId, discordId) {
+  return db.prepare("UPDATE users SET discordId = ? WHERE id = ?").run(discordId, userId);
+}
+
+function getUserByDiscordId(discordId) {
+  return db.prepare("SELECT * FROM users WHERE discordId = ?").get(discordId);
+}
+
 // ------------------------ EXPORT ------------------------
 module.exports = {
   db,
@@ -100,5 +109,7 @@ module.exports = {
   getLeaderboard,
   validateRun,
   getPendingRuns,
-  updateRunStatus
+  updateRunStatus,
+  linkDiscordAccount,
+  getUserByDiscordId
 };

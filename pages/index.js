@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function HomePage() {
   const [user, setUser] = useState(null);
@@ -33,36 +35,21 @@ export default function HomePage() {
 
   return (
     <div class="content">
-      <div class="header">
-        <h1>EditHUB</h1>
+      <head>
+        <title>EditHUB - Accueil</title>
+        <link rel="icon" href="/images/logo.png" />
+      </head>
+      
+      <Header />
 
-      </div>
+      <body>
+        <div class="body">
+          <h1>Ceci est la page d'accueil</h1>
+          <img src="/images/pepiclow.png" width="600px" alt="pepiclow"></img>
+        </div>
+      </body>
 
-      <div style={{ marginBottom: "1rem" }}>
-        {!user && (
-          <>
-            <Link href="/login"><button>Login</button></Link>
-            <Link href="/register"><button>Register</button></Link>
-          </>
-        )}
-        {user && (
-          <>
-            <button onClick={handleLogout}>Disconnect</button>
-            {user.isAdmin && <Link href="/admin"><button>Admin</button></Link>}
-          </>
-        )}
-      </div>
-
-      <h2>Catégories</h2>
-      <ul>
-        {categories.map(cat => (
-          <li key={cat.id}>
-            <Link href={`/categories/${cat.id}`}>
-              {cat.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <Footer />
     </div>
   );
 }
