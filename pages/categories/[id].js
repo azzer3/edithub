@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import "../../styles/leaderboard.css";
 
 export default function CategoryPage() {
   const router = useRouter();
