@@ -1,33 +1,37 @@
-import { getSession } from "../../../db/sessions.js";
-import { db, getPendingRuns, updateRunStatus } from "../../../db/index.js";
 import cookie from "cookie";
+import { getSession } from "../../../db/sessions.js";
+import { getUserById, getPendingRuns, updateRunStatus } from "../../../db/index.js";
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   const cookies = cookie.parse(req.headers.cookie || "");
   const session = getSession(cookies.token);
-
   if (!session) return res.status(401).json({ error: "Non autorisé" });
 
-  // Vérifie que l'utilisateur est admin
-  const user = db.prepare("SELECT * FROM users WHERE id = ?").get(session.userId);
+  const user = await getUserById(session.userId);
   if (!user?.isAdmin) return res.status(403).json({ error: "Accès refusé : admin uniquement" });
 
-  // GET : récupère les runs en attente
   if (req.method === "GET") {
-    const runs = getPendingRuns(); // Doit renvoyer category et subCategory
-    return res.status(200).json(runs);
+    try {
+      const pendingRuns = await getPendingRuns();
+      return res.status(200).json(pendingRuns);
+    } catch (err) {
+      console.error("Erreur fetch pending runs :", err);
+      return res.status(500).json({ error: "Impossible de récupérer les runs en attente" });
+    }
   }
 
-  // POST : met à jour le statut d’un run
   if (req.method === "POST") {
     const { runId, status } = req.body;
-    if (!["approved", "rejected"].includes(status)) {
-      return res.status(400).json({ error: "Statut invalide" });
-    }
+    if (!runId || !status) return res.status(400).json({ error: "runId ou status manquant" });
 
-    updateRunStatus(runId, status);
-    return res.status(200).json({ message: "Run mis à jour" });
+    try {
+      await updateRunStatus(runId, status);
+      return res.status(200).json({ success: true });
+    } catch (err) {
+      console.error("Erreur update run status :", err);
+      return res.status(500).json({ error: "Impossible de mettre à jour le run" });
+    }
   }
 
-  res.status(405).end();
+  res.status(405).json({ error: "Méthode non autorisée" });
 }
